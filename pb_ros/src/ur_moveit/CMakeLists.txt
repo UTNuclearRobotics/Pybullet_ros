@@ -3,8 +3,10 @@ project(ur_moveit)
 
 find_package(catkin REQUIRED)
 
-catkin_package()
+catkin_python_setup()
 
-install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  PATTERN "setup_assistant.launch" EXCLUDE)
-install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+# catkin_package()
+
+# install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+#   PATTERN "setup_assistant.launch" EXCLUDE)
+# install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

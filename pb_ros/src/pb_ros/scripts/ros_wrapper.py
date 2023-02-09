@@ -5,8 +5,8 @@ This program is the ROS wrapper of pybullet simulataor.
 '''
 import rospy
 # from pybullet_class import ur_robot
-from conversions import RosConvert
-from topics import joint_state,ArmCommand,actionserver
+from .conversions import RosConvert
+from .topics import joint_state_ur5, ArmCommand_ur5, actionserver_ur5
 import numpy as np
 import skimage
 import ipdb
@@ -14,8 +14,11 @@ import cv_bridge
 from threading import Thread
 from sensor_msgs.msg import JointState, Image, CameraInfo
 
-from cam_conversions import to_camera_info_msg
-from pybullet_class import BtCamera
+from .cam_conversions import to_camera_info_msg
+from .pybullet_class import BtCamera
+import pybullet as p
+
+
 # from .pybullet_class import CameraIntrinsic
 
 #path = "/home/amrut/ROS_Workspaces/pb_ros/src/pb_ros/urdf/urdf/real_arm.urdf"
@@ -23,10 +26,11 @@ from pybullet_class import BtCamera
 
 class ROS_Wrapper:
 	def __init__(self,path,gui=True):
+		# ipdb.set_trace()
 		self.bullet_obj = RosConvert(path,gui)
-		self.joint_state = joint_state(rosconvert_object=self.bullet_obj)
-		self.ArmCommand = ArmCommand(rosconvert_object=self.bullet_obj)
-		self.actionserver = actionserver(rosconvert_object=self.bullet_obj)
+		self.joint_state = joint_state_ur5(rosconvert_object=self.bullet_obj)
+		self.ArmCommand = ArmCommand_ur5(rosconvert_object=self.bullet_obj)
+		self.actionserver = actionserver_ur5(rosconvert_object=self.bullet_obj)
 		self.plugin = CameraPlugin(BtCamera(320, 240, 0.96, 0.01, 1.0, self.bullet_obj.robot.arm_id, 7))
 		# self.plugin = CameraPlugin(self.bullet_obj.robot.camera)
 		self.plugin.thread.start()
@@ -35,7 +39,7 @@ class ROS_Wrapper:
 		
 
 	def main_loop(self):
-		# ipdb.set_trace()
+		ipdb.set_trace()
 		self.joint_state.publish()
 
 class Plugin:
@@ -109,15 +113,15 @@ def apply_noise(img, k=1000, theta=0.001, sigma=0.005, l=4.0):
 
 
 
-path = rospy.get_param('/pb_ros/robot_urdf_path',True)
-rospy.init_node("Node",anonymous=True)
-ros = ROS_Wrapper(path,gui=True)
-rate = rospy.Rate(1000)
-while not rospy.is_shutdown():
-	ros.main_loop()
-	ros.bullet_obj.robot.step()
-	# ipdb.set_trace()
-	ros.plugin.activate()
-	rate.sleep()
+# path = rospy.get_param('/pb_ros/robot_urdf_path',True)
+# rospy.init_node("Node",anonymous=True)
+# ros = ROS_Wrapper(path,gui=True)
+# rate = rospy.Rate(1000)
+# while not rospy.is_shutdown():
+# 	ros.main_loop()
+# 	ros.bullet_obj.robot.step()
+# 	# ipdb.set_trace()
+# 	ros.plugin.activate()
+# 	rate.sleep()
 
 

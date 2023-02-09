@@ -5,7 +5,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 
 # for your packages to be recognized by python
 d = generate_distutils_setup(
- packages=['pb_ros'],
+ packages=['ur_moveit'],
  #Original
 #  package_dir={'ros_wrapper': 'scripts'}
 # Mine

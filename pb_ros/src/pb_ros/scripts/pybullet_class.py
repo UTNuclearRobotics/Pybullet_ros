@@ -6,9 +6,9 @@ import pybullet_data
 import time
 import ipdb
 
-from spatial import Rotation, Transform
+from .spatial import Rotation, Transform
 import open3d as o3d
-from perception import CameraIntrinsic
+from .perception import CameraIntrinsic
 # p.connect(p.GUI)
 # pid = p.isConnected()
 # print(pid)
@@ -24,10 +24,16 @@ from perception import CameraIntrinsic
 '''
 class ur_robot:
 	def __init__(self,path,gui=True,basePosition=[0,0,0],baseOrientation=[0,0,0,1],useFixedBase=1):
-		self.start_bullet(gui=gui) # If true enables Graphical interface.
+		#### cannot start pybullet if it is already loaded. Check if another python script has #####
+		#### instantiated the pybullet gui. if no other instantiation exists then set gui to true ####
+		#### if another instance exists then set gui as False to enable p.DIRECT connection ######
+		# self.start_bullet(gui=gui) # If true enables Graphical interface.
+		self.start_bullet(gui=False)
+
 		# Loads the robot and a plane at desired position and orientation
+		ipdb.set_trace()
 		self.robot = p.loadURDF(path,basePosition=basePosition,baseOrientation=baseOrientation,useFixedBase=1)
-		self.arm_id = 0
+		self.arm_id = 1
 		self._plane = p.loadURDF("plane.urdf",basePosition=[0,0,-2],baseOrientation=[0,0,0,1],useFixedBase=1)
 		self._numjoints = p.getNumJoints(self.robot)
 		self._linkNames = []
@@ -50,6 +56,7 @@ class ur_robot:
 		jointTypes = ["JOINT_REVOLUTE", "JOINT_PRISMATIC", "JOINT_SPHERICAL", "JOINT_PLANAR", "JOINT_FIXED"]
 		self._revotuteJoints = []
 		self._revotuteJointNames = []
+		ipdb.set_trace()
 		for i in range(self._numjoints):
 			data = p.getJointInfo(self.robot,jointIndex=i)
 			# print(data)
@@ -209,8 +216,12 @@ class BtCamera:
         R, t = pose.rotation, pose.translation
         # view_mat = p.computeViewMatrix(t, R.apply([0, 0, 1]) + t, R.apply([0, -1, 0]))
 
-		# working in pybullet
-        view_mat = p.computeViewMatrix(t, R.apply([1, 0, 0]), R.apply([0, 0, -1]))
+		# working in pybullet with working optical frome transform
+        # view_mat = p.computeViewMatrix(t, R.apply([1, 0, 0]), R.apply([0, 0, -1]))
+
+
+        view_mat = p.computeViewMatrix(t, R.apply([1, 0, 0])+t, R.apply([0, 0, 1]))
+
 
         # view_mat = p.computeViewMatrix(cameraEyePosition=[0, 0, 1],
         #                                   cameraTargetPosition=[0, 0, 0],

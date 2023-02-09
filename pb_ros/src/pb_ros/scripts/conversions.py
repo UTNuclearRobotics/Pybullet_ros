@@ -6,13 +6,13 @@ class.
 '''
 import numpy as np
 import rospy
-from pybullet_class import ur_robot
+from .pybullet_class import ur_robot
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TransformStamped
 from geometry_msgs.msg import Transform
 from std_msgs.msg import Float64MultiArray
-from pybullet_class import BtCamera
-
+from .pybullet_class import BtCamera
+import ipdb
 
 # path = "/home/amrut/Documents/sublime/src/ur5pybullet/urdf/real_arm.urdf"
 class RosConvert(object):
