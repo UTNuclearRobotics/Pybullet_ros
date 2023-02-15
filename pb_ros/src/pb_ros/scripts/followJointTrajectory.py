@@ -21,7 +21,7 @@ class actionserver:
         self.JointTraj = JointTrajectory()
         self.F = Float64MultiArray()
         # Topic 
-        self.arm_pub = rospy.Publisher("/arm_controller/command",Float64MultiArray,
+        self.arm_pub = rospy.Publisher("/ur5_arm_controller/command",Float64MultiArray,
                                         latch=True,queue_size=1)
     def callback(self,goal):
         self.JointTraj = self.goal.trajectory
@@ -56,7 +56,7 @@ class actionserver:
 
 rospy.init_node("moveit_action_server")
 obj = actionserver()
-server = actionlib.SimpleActionServer('arm_controller/follow_joint_trajectory',
+server = actionlib.SimpleActionServer('ur5_arm_controller/follow_joint_trajectory',
                                     FollowJointTrajectoryAction,obj.callback,False)
 server.start()
 rospy.spin()

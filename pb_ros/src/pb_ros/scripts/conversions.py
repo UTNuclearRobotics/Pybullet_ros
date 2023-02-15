@@ -21,6 +21,8 @@ class RosConvert(object):
 		self.loop_rate = 10
 		self.count = 0
 		self.robot = ur_robot(path,gui) # Passes robot path to pybullet class.
+		q_init = [np.deg2rad(7), np.deg2rad(-95), np.deg2rad(-87), np.deg2rad(-94), np.deg2rad(94), np.deg2rad(-177)]
+		self.robot.resetJointStates(q_init)
 		self.jointstate = JointState()
 		# self.arm_id = 0
 		# self.camera = BtCamera(320, 240, 0.96, 0.01, 1.0, 0, 11)

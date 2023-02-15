@@ -31,9 +31,9 @@ class ur_robot:
 		self.start_bullet(gui=False)
 
 		# Loads the robot and a plane at desired position and orientation
-		ipdb.set_trace()
+		# ipdb.set_trace()
 		self.robot = p.loadURDF(path,basePosition=basePosition,baseOrientation=baseOrientation,useFixedBase=1)
-		self.arm_id = 1
+		self.arm_id = 0
 		self._plane = p.loadURDF("plane.urdf",basePosition=[0,0,-2],baseOrientation=[0,0,0,1],useFixedBase=1)
 		self._numjoints = p.getNumJoints(self.robot)
 		self._linkNames = []
@@ -54,9 +54,9 @@ class ur_robot:
 	def getJointNames(self):
 		''' The JointVal must be an integer'''
 		jointTypes = ["JOINT_REVOLUTE", "JOINT_PRISMATIC", "JOINT_SPHERICAL", "JOINT_PLANAR", "JOINT_FIXED"]
-		self._revotuteJoints = []
-		self._revotuteJointNames = []
-		ipdb.set_trace()
+		self._revoluteJoints = []
+		self._revoluteJointNames = []
+		# ipdb.set_trace()
 		for i in range(self._numjoints):
 			data = p.getJointInfo(self.robot,jointIndex=i)
 			# print(data)
@@ -64,21 +64,22 @@ class ur_robot:
 			self._jointNames.append(data[1].decode("utf-8"))
 			self._jointTypes.append(jointTypes[int(data[2])])
 			if (int(data[2]) != 4):
-				self._revotuteJoints.append(i)
-				self._revotuteJointNames.append(self._jointNames[i]) 
-		# print(self._jointNames,self._revotuteJoints)
-	
+				self._revoluteJoints.append(i)
+				self._revoluteJointNames.append(self._jointNames[i]) 
+		# print(self._jointNames,self._revoluteJoints)
+		print(self._linkNames)
 	def resetJointState(self,jointName,jointVal):
 		Jointindex = self._jointNames.index(jointName)
 		p.resetJointState(self.robot,jointIndex=Jointindex,targetValue=1)
 		print("Succesfully Reset joint {} to Joint value {}".format(jointName, jointVal))
 	
 	def resetJointStates(self,jointValues):
-		jointNames = self._revotuteJoints
+		jointNames = self._revoluteJoints
 		print(jointNames)
+		
 		for i in range(len(jointNames)):
 			p.resetJointState(self.robot, jointIndex=jointNames[i], targetValue=jointValues[i])
-		
+		# ipdb.set_trace()
 		print("success\n")
 
 	def resetBasePosOrn(self,basePos,baseOrn):
@@ -102,17 +103,22 @@ class ur_robot:
 			# time.sleep(0.0001)
 
 	def allJointMotorControl(self,JointPoses=None,JointVels=None,controllerType='position'):
+		# ipdb.set_trace()
+		# For some reason the moveit joint order and the pybullet joint order are different 
+		# so swap 1st and 3rd joint command to compensate
+		joint_order = [3,2,1,4,5,6]
 
 		if (controllerType == 'position'):
 
 			if JointVels == None:
 				p.setJointMotorControlArray(self.robot,
-				                        jointIndices=self._revotuteJoints[:6],
+				                        # jointIndices=self._revoluteJoints[:6],
+										jointIndices=joint_order,
 				                        targetPositions=JointPoses,
 										controlMode=p.POSITION_CONTROL)
 			else:
 				p.setJointMotorControlArray(self.robot,
-				                        jointIndices=self._revotuteJoints[:6],
+				                        jointIndices=self._revoluteJoints[:6],
 				                        targetPositions=JointPoses,
 										targetVelocities=JointVels,
 										controlMode=p.POSITION_CONTROL)
@@ -121,13 +127,13 @@ class ur_robot:
 										# velocityGains=6*[0.5])
 		else:
 			p.setJointMotorControlArray(self.robot,
-				                        jointIndices=self._revotuteJoints,
+				                        jointIndices=self._revoluteJoints,
 				                        targetVelocities=JointVels,
 										controlMode=p.VELOCITY_CONTROL)
 		
 		for _ in range(self._simRate):
 			p.stepSimulation()
-			time.sleep(0.0001)
+			# time.sleep(0.0001)
 		# print(self.getLinkStates())
 
 	def setGravity(self,val=[0,0,-9.81]):
@@ -138,12 +144,12 @@ class ur_robot:
 	def getJointStates(self):
 		""" Get Joints position and velocity """
 
-		for i in self._revotuteJoints:
+		for i in self._revoluteJoints:
 			data = p.getJointState(self.robot,jointIndex=i)
 			self._joints_pos.append(data[0])
 			self._joints_vel.append(data[1])
 			self._joints_eff.append(data[3])
-		val = (self._revotuteJointNames,self._joints_pos,self._joints_vel)
+		val = (self._revoluteJointNames,self._joints_pos,self._joints_vel)
 		self._joints_pos,self._joints_vel,self._joints_eff = [],[],[]
 		# print(val)
 		return val

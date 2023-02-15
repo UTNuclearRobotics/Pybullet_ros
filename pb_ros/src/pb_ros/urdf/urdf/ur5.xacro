@@ -12,8 +12,8 @@
   <!-- connect arm to panda world -->
 
   <xacro:unless value="${not connected_to}">
-    <!-- <joint name="${connected_to}_ur5_joint" type="fixed"> -->
-    <joint name="panda_ur5_joint" type="fixed">
+    <joint name="${connected_to}_ur5_joint" type="fixed">
+    <!-- <joint name="panda_ur5_joint" type="fixed"> -->
 
       <parent link="${connected_to}"/>
       <child link="base_link"/>
@@ -253,28 +253,12 @@
     <!-- <origin rpy="0 0 1.570" xyz="0.06 0 0.02"/> -->
 
     <!-- mine -->
-    <origin rpy="0 0 0" xyz="0 0.0 0.05"/>
+    <!-- <origin rpy="0 0 0" xyz="0 0.0 0.05"/> -->
+    <origin rpy="1.570 0 1.57" xyz="0 0.0 -0.05"/>
 
   </joint>
 
 
-  <!--################################################
-  ########          connect model                #####
-  ####################################################-->
-
-  
-
-
-
-  <!-- <link name="world"/> -->
-  <!-- <link name="panda_link0" /> -->
-
-
-  <!-- <joint name="world_joint" type="fixed">
-    <parent link="world"/>
-    <child link="base_link"/>
-    <origin rpy="0.0 0.0 0" xyz="0.0 0.0 2.1"/>
-  </joint> -->
   </xacro:macro>
 </robot>
 

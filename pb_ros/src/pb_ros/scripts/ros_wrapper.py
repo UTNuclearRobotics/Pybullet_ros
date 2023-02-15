@@ -28,19 +28,20 @@ class ROS_Wrapper:
 	def __init__(self,path,gui=True):
 		# ipdb.set_trace()
 		self.bullet_obj = RosConvert(path,gui)
-		self.joint_state = joint_state_ur5(rosconvert_object=self.bullet_obj)
-		self.ArmCommand = ArmCommand_ur5(rosconvert_object=self.bullet_obj)
-		self.actionserver = actionserver_ur5(rosconvert_object=self.bullet_obj)
-		self.plugin = CameraPlugin(BtCamera(320, 240, 0.96, 0.01, 1.0, self.bullet_obj.robot.arm_id, 7))
+		# self.joint_state = joint_state_ur5(rosconvert_object=self.bullet_obj)
+		# self.ArmCommand = ArmCommand_ur5(rosconvert_object=self.bullet_obj)
+		# self.actionserver = actionserver_ur5(rosconvert_object=self.bullet_obj)
+		# self.plugin = UR5CameraPlugin(BtCamera(320, 240, 0.96, 0.01, 1.0, self.bullet_obj.robot.arm_id, 7))
+		# self.plugin = (BtCamera(320, 240, 0.96, 0.01, 1.0, self.bullet_obj.robot.arm_id, 7))
 		# self.plugin = CameraPlugin(self.bullet_obj.robot.camera)
-		self.plugin.thread.start()
+		# self.plugin.thread.start()
 		
-		self.actionserver.start()
+		# self.actionserver.start()
 		
 
-	def main_loop(self):
-		ipdb.set_trace()
-		self.joint_state.publish()
+	# def main_loop(self):
+		# ipdb.set_trace()
+		# self.joint_state.publish()
 
 class Plugin:
     """A plugin that spins at a constant rate in its own thread."""
@@ -67,7 +68,7 @@ class Plugin:
         raise NotImplementedError
 
 
-class CameraPlugin(Plugin):
+class UR5CameraPlugin(Plugin):
     def __init__(self, camera, name="camera", rate=5):
         super().__init__(rate)
         self.camera = camera
@@ -77,9 +78,9 @@ class CameraPlugin(Plugin):
         self.init_publishers()
 
     def init_publishers(self):
-        topic = self.name + "/depth/camera_info"
+        topic = "ur5_" + self.name + "/depth/camera_info"
         self.info_pub = rospy.Publisher(topic, CameraInfo, queue_size=10)
-        topic = self.name + "/depth/image_rect_raw"
+        topic = "ur5_" + self.name + "/depth/image_rect_raw"
         
         self.depth_pub = rospy.Publisher(topic, Image, queue_size=10)
 
@@ -88,7 +89,7 @@ class CameraPlugin(Plugin):
         msg = to_camera_info_msg(self.camera.intrinsic)
         # msg = self.camera.intrinsic
         # ipdb.set_trace()
-        msg.header.frame_id = self.name + "_depth_optical_frame"
+        msg.header.frame_id = "ur5_" + self.name + "_depth_optical_frame"
         msg.header.stamp = stamp
         self.info_pub.publish(msg)
         
@@ -100,7 +101,7 @@ class CameraPlugin(Plugin):
 
         msg = self.cv_bridge.cv2_to_imgmsg((1000 * depth).astype(np.uint16))
         msg.header.stamp = stamp
-        msg.header.frame_id = self.name + "_depth_optical_frame"
+        msg.header.frame_id = "ur5_" + self.name + "_depth_optical_frame"
         self.depth_pub.publish(msg)
 
 def apply_noise(img, k=1000, theta=0.001, sigma=0.005, l=4.0):

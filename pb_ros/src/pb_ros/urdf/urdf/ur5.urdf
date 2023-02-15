@@ -213,7 +213,7 @@
     </collision>
   </link>
 
-  <link name="camera_depth_optical_frame">
+  <link name="ur5_camera_depth_optical_frame">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.0"/>
@@ -223,12 +223,13 @@
   <joint name="ur5_hand_camera_depth_optical_frame_joint" type="fixed">
     <!-- <parent link="panda_hand"/> -->
     <parent link="ee_link"/>
-    <child link="camera_depth_optical_frame"/>
+    <child link="ur5_camera_depth_optical_frame"/>
     <!-- original working-->
     <!-- <origin rpy="0 0 1.570" xyz="0.06 0 0.02"/> -->
 
     <!-- mine -->
-    <origin rpy="0 0 0" xyz="0 0.0 0.05"/>
+    <!-- <origin rpy="0 0 0" xyz="0 0.0 0.05"/> -->
+    <origin rpy="1.570 0 1.57" xyz="0.0 0.0 -0.05"/>
 
   </joint>
 
@@ -240,13 +241,23 @@
   <!-- connect arm to world -->
 
   <link name="world"/>
-  <!-- <link name="panda_link0" /> -->
 
-  <joint name="world_joint" type="fixed">
+  <joint name="world_ur5_joint" type="fixed">
     <parent link="world"/>
     <child link="base_link"/>
+    <!-- <origin rpy="0.0 0.0 0" xyz="0.0 0.0 2.1"/> -->
+    <origin rpy="0.0 0.0 0" xyz="0.0 0.0 0"/>
+  </joint> 
+
+
+
+  <!-- <link name="panda_link0" />
+
+  <joint name="panda_ur5_joint" type="fixed">
+    <parent link="panda_link0"/>
+    <child link="base_link"/>
     <origin rpy="0.0 0.0 0" xyz="0.0 0.0 2.1"/>
-  </joint>
+  </joint> -->
 
 </robot>
 
