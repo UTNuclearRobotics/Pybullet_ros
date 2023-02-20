@@ -112,13 +112,14 @@ class ur_robot:
 
 			if JointVels == None:
 				p.setJointMotorControlArray(self.robot,
-				                        # jointIndices=self._revoluteJoints[:6],
-										jointIndices=joint_order,
+				                        jointIndices=self._revoluteJoints[:6],
+										# jointIndices=joint_order,
 				                        targetPositions=JointPoses,
 										controlMode=p.POSITION_CONTROL)
 			else:
 				p.setJointMotorControlArray(self.robot,
-				                        jointIndices=self._revoluteJoints[:6],
+				                        # jointIndices=self._revoluteJoints[:6],
+										jointIndices=joint_order,
 				                        targetPositions=JointPoses,
 										targetVelocities=JointVels,
 										controlMode=p.POSITION_CONTROL)
@@ -128,6 +129,7 @@ class ur_robot:
 		else:
 			p.setJointMotorControlArray(self.robot,
 				                        jointIndices=self._revoluteJoints,
+										# jointIndices=joint_order,
 				                        targetVelocities=JointVels,
 										controlMode=p.VELOCITY_CONTROL)
 		
